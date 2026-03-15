@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sistema QR — Seguridad Química — Celulosa Argentina S.A.</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:sans-serif;background:#0a0e17;color:#e8edf5;min-height:100vh}
+header{background:#111827;border-bottom:1px solid #1e2d45;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo-text{font-size:.85rem;font-weight:700;font-family:monospace}
+.logo-sub{font-size:.65rem;color:#7a8ba3;font-family:monospace}
+nav{background:#111827;border-bottom:1px solid #1e2d45;display:flex;overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+.nb{padding:12px 14px;background:none;border:none;color:#7a8ba3;font-size:.78rem;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s}
+.nb:hover{color:#e8edf5}
+.nb.on{color:#00c2ff;border-bottom-color:#00c2ff}
+.main{max-width:900px;margin:0 auto;padding:1.2rem}
+.sec{display:none}.sec.on{display:block}
+.sh{font-size:1.3rem;font-weight:700;margin-bottom:1.2rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.8rem}
+.card{background:#111827;border:1px solid #1e2d45;border-radius:8px;padding:1.2rem;cursor:pointer;transition:all .2s}
+.card:hover{border-color:#00c2ff;transform:translateY(-2px)}
+.cf{font-family:monospace;font-size:1.2rem;font-weight:700;margin-bottom:.4rem}
+.cn{font-size:.82rem;color:#7a8ba3;margin-bottom:.5rem}
+.cd{font-size:.78rem;color:#7a8ba3;line-height:1.5}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:.8rem}
+.tag{font-family:monospace;font-size:.6rem;padding:2px 7px;border-radius:3px;background:#1a2235;border:1px solid #1e2d45;color:#7a8ba3}
+/* modal */
+.ov{display:none;position:fixed;inset:0;background:rgba(5,8,15,.85);z-index:200;justify-content:center;align-items:flex-start;padding:1.5rem;overflow-y:auto}
+.ov.on{display:flex}
+.ficha{background:#111827;border:1px solid #1e2d45;border-radius:10px;width:100%;max-width:680px}
+.fh{padding:1.2rem 1.5rem;border-bottom:1px solid #1e2d45;display:flex;justify-content:space-between;align-items:center}
+.fh h2{font-size:1.2rem}
+.fh p{font-size:.75rem;color:#7a8ba3;margin-top:3px}
+.xb{background:#1a2235;border:1px solid #1e2d45;color:#7a8ba3;width:32px;height:32px;border-radius:6px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.fb{padding:1.5rem}
+.ft{font-family:monospace;font-size:.6rem;color:#00c2ff;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.5rem;padding-bottom:.3rem;border-bottom:1px solid #1e2d45}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1rem}
+.fi{background:#1a2235;border-radius:6px;padding:.7rem}
+.fl{font-size:.65rem;color:#7a8ba3;margin-bottom:3px;font-family:monospace}
+.fv{font-size:.82rem;font-weight:500;line-height:1.4}
+.al{border-radius:6px;padding:.8rem;margin-bottom:.6rem;display:flex;gap:8px}
+.al-d{background:rgba(255,60,60,.08);border:1px solid rgba(255,60,60,.25)}
+.al-w{background:rgba(255,194,70,.08);border:1px solid rgba(255,194,70,.25)}
+.al-g{background:rgba(0,232,122,.08);border:1px solid rgba(0,232,122,.25)}
+.ai{font-size:1rem;flex-shrink:0;margin-top:1px}
+.at{font-size:.8rem;line-height:1.5}
+.at strong{display:block;margin-bottom:2px}
+.steps{margin-top:.5rem}
+.step{display:flex;gap:10px;margin-bottom:.5rem;background:#1a2235;border-radius:6px;padding:.7rem;align-items:flex-start}
+.sn{background:#00c2ff;color:#0a0e17;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:.65rem;font-weight:700;flex-shrink:0;margin-top:1px;counter-increment:step}
+.st{font-size:.8rem;line-height:1.5}
+/* epp */
+.ec{background:#111827;border:1px solid #1e2d45;border-radius:8px;padding:1.2rem;margin-bottom:.8rem}
+.eh{display:flex;gap:12px;align-items:center;margin-bottom:.8rem}
+.ei{font-size:2rem}
+.et{font-size:.92rem;font-weight:700}
+.es{font-size:.75rem;color:#7a8ba3;margin-top:2px}
+.sl{display:grid;grid-template-columns:1fr 1fr;gap:.4rem}
+.si{background:#1a2235;border-radius:5px;padding:.55rem .7rem;font-size:.78rem}
+.sk{font-size:.65rem;color:#7a8ba3;font-family:monospace;margin-bottom:2px}
+/* timeline */
+.tl{position:relative;padding-left:2.2rem}
+.tl::before{content:'';position:absolute;left:.6rem;top:0;bottom:0;width:2px;background:#1e2d45}
+.ti{position:relative;margin-bottom:1.2rem}
+.td{position:absolute;left:-2.2rem;top:.2rem;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:.65rem;font-weight:700;border:2px solid #0a0e17}
+.tc{background:#111827;border:1px solid #1e2d45;border-radius:8px;padding:1rem 1.2rem}
+.tct{font-weight:700;font-size:.9rem;margin-bottom:.2rem}
+.tcs{font-family:monospace;font-size:.65rem;color:#7a8ba3;margin-bottom:.6rem}
+.tcb{font-size:.8rem;line-height:1.6}
+.chtags{display:flex;flex-wrap:wrap;gap:5px;margin-top:.6rem}
+.cht{font-family:monospace;font-size:.6rem;padding:2px 7px;border-radius:3px;background:rgba(0,194,255,.1);border:1px solid rgba(0,194,255,.25);color:#00c2ff}
+.riskt{font-family:monospace;font-size:.6rem;padding:2px 7px;border-radius:3px;background:rgba(255,92,58,.1);border:1px solid rgba(255,92,58,.25);color:#ff5c3a}
+/* emergencias */
+.eg{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.8rem}
+.ecard{background:#111827;border:1px solid #1e2d45;border-radius:8px;overflow:hidden}
+.ech{padding:.8rem 1rem;display:flex;align-items:center;gap:8px;border-bottom:1px solid #1e2d45}
+.ech .icon{font-size:1.2rem}
+.ech .title{font-weight:700;font-size:.85rem}
+.ecb{padding:1rem}
+.es2{display:flex;gap:8px;margin-bottom:.5rem}
+.en{background:#ff5c3a;color:white;width:18px;height:18px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:.6rem;font-weight:700;flex-shrink:0;margin-top:1px}
+.et2{font-size:.78rem;line-height:1.5}
+.contacts{margin-top:.8rem;padding-top:.8rem;border-top:1px solid #1e2d45;display:flex;gap:.4rem;flex-wrap:wrap}
+.chip{background:#1a2235;border:1px solid #1e2d45;border-radius:5px;padding:3px 9px;font-size:.7rem;font-family:monospace}
+.chip strong{color:#00e87a}
+/* table */
+.tbl{width:100%;border-collapse:collapse;background:#111827;border-radius:8px;overflow:hidden}
+.tbl th{background:#1a2235;padding:8px 12px;font-family:monospace;font-size:.65rem;letter-spacing:.1em;color:#7a8ba3;text-align:left;border-bottom:1px solid #1e2d45}
+.tbl td{padding:8px 12px;font-size:.8rem;border-bottom:1px solid #1e2d45}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:#1a2235}
+.rc{font-family:monospace;font-size:.6rem;padding:2px 7px;border-radius:3px;font-weight:600}
+.rc-c{background:rgba(255,60,60,.15);color:#ff6b6b;border:1px solid rgba(255,60,60,.3)}
+.rc-m{background:rgba(0,194,255,.1);color:#00c2ff;border:1px solid rgba(0,194,255,.25)}
+/* puntos qr */
+.pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.8rem}
+.pc{background:#111827;border:1px solid #1e2d45;border-radius:8px;padding:1rem;text-align:center}
+.pico{width:50px;height:50px;margin:0 auto 8px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:1.4rem}
+.pcode{font-family:monospace;font-size:.75rem;font-weight:700;margin-bottom:3px}
+.pname{font-size:.78rem;font-weight:700;margin-bottom:4px}
+.pdesc{font-size:.68rem;color:#7a8ba3;line-height:1.4}
+@media(max-width:500px){.fg{grid-template-columns:1fr}.sl{grid-template-columns:1fr}.main{padding:.8rem}}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo-text">SISTEMA QR — SEGURIDAD QUÍMICA</div>
+    <div class="logo-sub">Celulosa Argentina S.A. · Blanqueamiento · Zárate</div>
+  </div>
+  <div style="font-family:monospace;font-size:.65rem;background:#0d2235;border:1px solid #00c2ff;color:#00c2ff;padding:3px 9px;border-radius:4px">UTN · LHST · 2025</div>
+</header>
+
+<nav>
+  <button class="nb on" onclick="show('quimicos',this)">⚗️ Fichas Químicas</button>
+  <button class="nb" onclick="show('epp',this)">🦺 EPP</button>
+  <button class="nb" onclick="show('proceso',this)">🏭 Blanqueamiento</button>
+  <button class="nb" onclick="show('emergencias',this)">🚨 Emergencias</button>
+  <button class="nb" onclick="show('primeros',this)">🏥 Primeros Auxilios</button>
+  <button class="nb" onclick="show('tlv',this)">📊 TLV</button>
+  <button class="nb" onclick="show('puntos',this)">📍 Puntos QR</button>
+</nav>
+
+<div class="main">
+
+<!-- FICHAS QUÍMICAS -->
+<div class="sec on" id="s-quimicos">
+  <div class="sh">⚗️ Fichas de Seguridad — Agentes Químicos</div>
+  <div class="grid">
+    <div class="card" onclick="openM('clo2')" style="border-top:3px solid #ff5c3a">
+      <div class="cf" style="color:#ff5c3a">ClO₂</div>
+      <div class="cn">Dióxido de Cloro</div>
+      <div class="cd">Gas amarillo-verdoso, oxidante extremadamente peligroso. Principal riesgo del área.</div>
+      <div class="tags"><span class="tag">Gas</span><span class="tag">Oxidante</span><span class="tag">TLV: 0.1 ppm</span></div>
+    </div>
+    <div class="card" onclick="openM('h2o2')" style="border-top:3px solid #ffc246">
+      <div class="cf" style="color:#ffc246">H₂O₂</div>
+      <div class="cn">Peróxido de Hidrógeno</div>
+      <div class="cd">Líquido oxidante. En concentraciones industriales causa quemaduras graves.</div>
+      <div class="tags"><span class="tag">Líquido</span><span class="tag">Oxidante</span><span class="tag">TLV: 1 ppm</span></div>
+    </div>
+    <div class="card" onclick="openM('naoh')" style="border-top:3px solid #c084fc">
+      <div class="cf" style="color:#c084fc">NaOH</div>
+      <div class="cn">Soda Cáustica</div>
+      <div class="cd">Fuertemente corrosiva. Quemaduras severas en piel, ojos y vías respiratorias.</div>
+      <div class="tags"><span class="tag">Corrosivo</span><span class="tag">Alcalino</span></div>
+    </div>
+    <div class="card" onclick="openM('naocl')" style="border-top:3px solid #00c2ff">
+      <div class="cf" style="color:#00c2ff">NaOCl</div>
+      <div class="cn">Hipoclorito de Sodio</div>
+      <div class="cd">Libera cloro gas en contacto con ácidos. Corrosivo para piel y mucosas.</div>
+      <div class="tags"><span class="tag">Oxidante</span><span class="tag">Irritante</span></div>
+    </div>
+    <div class="card" onclick="openM('h2so4')" style="border-top:3px solid #fb923c">
+      <div class="cf" style="color:#fb923c">H₂SO₄</div>
+      <div class="cn">Ácido Sulfúrico</div>
+      <div class="cd">Ácido fuerte, corrosivo. Reacción violenta con agua. Usado en ajuste de pH.</div>
+      <div class="tags"><span class="tag">Ácido fuerte</span><span class="tag">TLV: 0.2 mg/m³</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- EPP -->
+<div class="sec" id="s-epp">
+  <div class="sh">🦺 Elementos de Protección Personal</div>
+
+  <div class="ec">
+    <div class="eh"><div class="ei">😷</div><div><div class="et">Respirador de Media Cara con Filtros Químicos</div><div class="es">Uso obligatorio en toda el área de blanqueamiento</div></div></div>
+    <div class="sl">
+      <div class="si"><div class="sk">FILTRO REQUERIDO</div>Tipo B + P3 (gases inorgánicos)</div>
+      <div class="si"><div class="sk">NORMA</div>NIOSH TC-23C / IRAM</div>
+      <div class="si"><div class="sk">PROTEGE CONTRA</div>ClO₂, Cl₂, vapores ácidos</div>
+      <div class="si"><div class="sk">VIDA ÚTIL FILTRO</div>6 meses o ante primer olor</div>
+    </div>
+    <div class="al al-d" style="margin-top:.8rem">
+      <div class="ai">⚠️</div>
+      <div class="at"><strong>NUNCA retirar por calor o incomodidad en el área activa.</strong> El ClO₂ actúa de forma acumulativa. La experiencia NO reemplaza la protección.</div>
+    </div>
+    <div class="steps" style="counter-reset:step">
+      <div class="step"><div class="sn">1</div><div class="st">Verificar estado: grietas, válvulas, correas antes de cada uso.</div></div>
+      <div class="step"><div class="sn">2</div><div class="st">Colocar cubriendo nariz y barbilla. Ajustar correas sin cruzarlas.</div></div>
+      <div class="step"><div class="sn">3</div><div class="st">Prueba de sellado: tapar válvula de exhalación y exhalar levemente. Sin fugas.</div></div>
+      <div class="step"><div class="sn">4</div><div class="st">Si percibe olor con el respirador puesto: evacuar y reemplazar filtro.</div></div>
+    </div>
+  </div>
+
+  <div class="ec">
+    <div class="eh"><div class="ei">🧤</div><div><div class="et">Guantes de Protección Química</div><div class="es">Obligatorios en manipulación de todos los agentes</div></div></div>
+    <div class="sl">
+      <div class="si"><div class="sk">MATERIAL</div>Nitrilo ≥0.4mm / Neopreno ≥0.7mm</div>
+      <div class="si"><div class="sk">PARA NaOH / H₂SO₄</div>PVC caña larga mínimo 30cm</div>
+      <div class="si"><div class="sk">NORMA</div>EN 374 / IRAM 3623</div>
+      <div class="si"><div class="sk">RENOVACIÓN</div>Ante perforación, decoloración o rigidez</div>
+    </div>
+    <div class="al al-w" style="margin-top:.8rem">
+      <div class="ai">⚡</div>
+      <div class="at"><strong>Inspección obligatoria:</strong> inflar el guante soplando por la muñeca. Si escapa aire, descartar.</div>
+    </div>
+  </div>
+
+  <div class="ec">
+    <div class="eh"><div class="ei">🥽</div><div><div class="et">Gafas Herméticas / Pantalla Facial</div><div class="es">Obligatorias ante riesgo de salpicadura</div></div></div>
+    <div class="sl">
+      <div class="si"><div class="sk">TIPO MÍNIMO</div>Gafas herméticas montura integral</div>
+      <div class="si"><div class="sk">PARA TRASVASE</div>Pantalla facial completa adicional</div>
+      <div class="si"><div class="sk">NORMA</div>EN 166 / ANSI Z87.1</div>
+      <div class="si"><div class="sk">LIMPIEZA</div>Enjuagar con agua limpia tras cada uso</div>
+    </div>
+  </div>
+
+  <div class="ec">
+    <div class="eh"><div class="ei">🚿</div><div><div class="et">Ducha de Emergencia y Lavaojos</div><div class="es">Actuar en los primeros 10-15 segundos ante exposición</div></div></div>
+    <div class="sl">
+      <div class="si"><div class="sk">CAUDAL DUCHA</div>≥75 L/min durante 15 minutos</div>
+      <div class="si"><div class="sk">TEMPERATURA</div>Agua templada 16–38°C</div>
+      <div class="si"><div class="sk">PRUEBA SEMANAL</div>Activar 30 seg para limpiar línea</div>
+      <div class="si"><div class="sk">ACCESO</div>≤10 segundos desde cada puesto</div>
+    </div>
+    <div class="al al-g" style="margin-top:.8rem">
+      <div class="ai">✅</div>
+      <div class="at"><strong>Ante contacto con cualquier agente:</strong> actuar la ducha/lavaojos inmediatamente. El tiempo de respuesta es crítico.</div>
+    </div>
+  </div>
+</div>
+
+<!-- PROCESO -->
+<div class="sec" id="s-proceso">
+  <div class="sh">🏭 Proceso de Blanqueamiento — Etapas y Riesgos</div>
+  <div class="al al-w" style="margin-bottom:1.2rem">
+    <div class="ai">⚠️</div>
+    <div class="at"><strong>Antes de iniciar:</strong> EPP completo, ventilación activa, detectores de ClO₂ operativos.</div>
+  </div>
+  <div class="tl">
+    <div class="ti">
+      <div class="td" style="background:#2E5090;color:white">D₀</div>
+      <div class="tc">
+        <div class="tct">Etapa D₀ — Primera dosificación de ClO₂</div>
+        <div class="tcs">Deslignificación inicial</div>
+        <div class="tcb">Se dosifica dióxido de cloro para oxidar los compuestos coloreados. La reacción genera calor y puede liberar vapores. Concentración de dosificación: 8–10 g/L.</div>
+        <div class="chtags"><span class="cht">ClO₂ — 0.5–2 kg/t pasta</span><span class="riskt">Riesgo IPER: Crítico</span><span class="riskt">Inhalación de vapores</span></div>
+      </div>
+    </div>
+    <div class="ti">
+      <div class="td" style="background:#7c3aed;color:white">E</div>
+      <div class="tc">
+        <div class="tct">Etapa E/EOP — Extracción Alcalina</div>
+        <div class="tcs">Solubilización de lignina con NaOH</div>
+        <div class="tcb">Se dosifica soda cáustica a 60–80°C. En variante EOP se agrega H₂O₂ y oxígeno presurizado. Manejo simultáneo de tres agentes agresivos.</div>
+        <div class="chtags"><span class="cht">NaOH — 10–25 kg/t</span><span class="cht">H₂O₂ — 3–10 kg/t</span><span class="riskt">Riesgo IPER: Crítico</span><span class="riskt">Salpicaduras cáusticas</span></div>
+      </div>
+    </div>
+    <div class="ti">
+      <div class="td" style="background:#b45309;color:white">D₁</div>
+      <div class="tc">
+        <div class="tct">Etapa D₁ — Segunda dosificación de ClO₂</div>
+        <div class="tcs">Blanqueamiento intermedio — máximo riesgo</div>
+        <div class="tcb">Segunda dosis de ClO₂ a ~70°C. El riesgo de inhalación es máximo en esta etapa por la temperatura y concentración del agente.</div>
+        <div class="chtags"><span class="cht">ClO₂ — 3–8 kg/t pasta</span><span class="riskt">Riesgo IPER: Crítico</span><span class="riskt">Torre: zona de máximo riesgo</span></div>
+      </div>
+    </div>
+    <div class="ti">
+      <div class="td" style="background:#00c2ff;color:#111">P</div>
+      <div class="tc">
+        <div class="tct">Etapa P — Peróxido de Hidrógeno</div>
+        <div class="tcs">Blanqueamiento final</div>
+        <div class="tcb">H₂O₂ en condición alcalina (pH 10–11) a ~70°C. Altamente reactivo. Materiales orgánicos contaminantes pueden descomponer el peróxido violentamente.</div>
+        <div class="chtags"><span class="cht">H₂O₂ — 5–15 kg/t</span><span class="riskt">Riesgo IPER: Moderado/Crítico</span><span class="riskt">Descomposición exotérmica</span></div>
+      </div>
+    </div>
+    <div class="ti">
+      <div class="td" style="background:#047857;color:white">pH</div>
+      <div class="tc">
+        <div class="tct">Ajuste de pH y Lavado Final</div>
+        <div class="tcs">Neutralización con H₂SO₄</div>
+        <div class="tcb">Se neutraliza con ácido sulfúrico diluido hasta pH 4.5–6.5. El contacto de H₂SO₄ con residuos alcalinos genera calor. Riesgo de vapores ácidos.</div>
+        <div class="chtags"><span class="cht">H₂SO₄ diluido</span><span class="riskt">Riesgo IPER: Moderado</span><span class="riskt">Vapores ácidos</span></div>
+      </div>
+    </div>
+    <div class="ti">
+      <div class="td" style="background:#ff5c3a;color:white">L</div>
+      <div class="tc">
+        <div class="tct">Limpieza de Equipos</div>
+        <div class="tcs">Máximo riesgo por mezcla accidental — REQUIERE PERMISO DE TRABAJO</div>
+        <div class="tcb">Exposición residual a todos los agentes del proceso. Riesgo de mezcla accidental (ácido + cáustica, H₂O₂ + contaminantes). Siempre con acompañante.</div>
+        <div class="chtags"><span class="riskt">Riesgo IPER: Crítico</span><span class="riskt">Mezcla accidental</span><span class="riskt">Permiso de trabajo obligatorio</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EMERGENCIAS -->
+<div class="sec" id="s-emergencias">
+  <div class="sh">🚨 Protocolos de Emergencia y Derrames</div>
+  <div class="al al-d" style="margin-bottom:1.2rem">
+    <div class="ai">🆘</div>
+    <div class="at"><strong>ANTE TODA EMERGENCIA: 1) Alertar · 2) Evacuar · 3) Contener · 4) Reportar.</strong> Nunca actuar solo en derrames grandes. Nunca ingresar sin EPP completo.</div>
+  </div>
+  <div class="eg">
+    <div class="ecard">
+      <div class="ech"><div class="icon">☁️</div><div class="title" style="color:#ff5c3a">Escape de ClO₂</div></div>
+      <div class="ecb">
+        <div class="es2"><div class="en">1</div><div class="et2">Colocarse respirador inmediatamente ante olor o alarma.</div></div>
+        <div class="es2"><div class="en">2</div><div class="et2">Alertar al supervisor y activar alarma manual.</div></div>
+        <div class="es2"><div class="en">3</div><div class="et2">Evacuar hacia zona de viento favorable. NO contraviento.</div></div>
+        <div class="es2"><div class="en">4</div><div class="et2">Cerrar válvulas solo si
